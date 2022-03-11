@@ -22,12 +22,13 @@ namespace CarFactory_Interior
 
         public Interior GetInterior(CarSpecification specification)
         {
-            
+
             return new Interior
             {
                 Dashboard = _dashboardBuilder.Build(),
                 Seats = _seatBuilder.Build(),
-                FrontWindowSpeakers = _speakerBuilder.BuildFrontWindowSpeakers(specification.FrontWindowSpeakers)
+                FrontWindowSpeakers = _speakerBuilder.BuildFrontWindowSpeakers(specification.FrontWindowSpeakers),
+                DoorSpeakers = _speakerBuilder.BuildDoorSpeakers(specification.DoorSpeakers)
             };
         }
     }

@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Drawing;
-using System.Threading.Tasks;
+using System.Linq;
 using CarFactory_Domain;
 using CarFactory_Factory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace CarFactory.Controllers
 {
@@ -55,12 +54,12 @@ namespace CarFactory.Controllers
                     }
                     PaintJob? paint = null;
                     var baseColor = Color.FromName(spec.Specification.Paint.BaseColor);
-                    switch (spec.Specification.Paint.Type)
+                    switch (spec.Specification.Paint.Type.ToLower())
                     {
                         case "single":
                             paint = new SingleColorPaintJob(baseColor);
                             break;
-                        case "strie":
+                        case "stripe":
                             paint = new StripedPaintJob(baseColor, Color.FromName(spec.Specification.Paint.StripeColor));
                             break;
                         case "dot":
@@ -70,51 +69,12 @@ namespace CarFactory.Controllers
                             throw new ArgumentException(string.Format("Unknown paint type %", spec.Specification.Paint.Type));
                     }
                     var dashboardSpeakers = spec.Specification.FrontWindowSpeakers.Select(s => new CarSpecification.SpeakerSpecification { IsSubwoofer = s.IsSubwoofer });
-                    var doorSpeakers = new CarSpecification.SpeakerSpecification[0]; //TODO: Let people install door speakers
+                    var doorSpeakers = spec.Specification.DoorSpeakers.Select(s => new CarSpecification.SpeakerSpecification { IsSubwoofer = s.IsSubwoofer });
                     var wantedCar = new CarSpecification(paint, spec.Specification.Manufacturer, spec.Specification.NumberOfDoors, doorSpeakers, dashboardSpeakers);
                     wantedCars.Add(wantedCar);
                 }
             }
             return wantedCars;
-        }
-
-        public class BuildCarInputModel
-        {
-            public IEnumerable<BuildCarInputModelItem> Cars { get; set; }
-        }
-
-        public class BuildCarInputModelItem
-        {
-            [Required]
-            public int Amount { get; set; }
-            [Required]
-            public CarSpecificationInputModel Specification { get; set; }
-        }
-
-        public class CarPaintSpecificationInputModel
-        {
-            public string Type { get; set; }
-            public string BaseColor { get; set; }
-            public string? StripeColor { get; set; }
-            public string? DotColor { get; set; }
-        }
-
-        public class CarSpecificationInputModel
-        {
-            public int NumberOfDoors { get; set; }
-            public CarPaintSpecificationInputModel Paint { get; set; }
-            public Manufacturer Manufacturer { get; set; }
-            public SpeakerSpecificationInputModel[] FrontWindowSpeakers { get; set; }
-        }
-
-        public class SpeakerSpecificationInputModel
-        {
-            public bool IsSubwoofer { get; set; }
-        }
-
-        public class BuildCarOutputModel{
-            public long RunTime { get; set; }
-            public IEnumerable<Car> Cars { get; set; }
         }
     }
 }
