@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CarFactory-Assembly\CarFactory-Assembly.csproj" />
+    <ProjectReference Include="..\CarFactory-Chassis\CarFactory-Chassis.csproj" />
+    <ProjectReference Include="..\CarFactory-Domain\CarFactory-Domain.csproj" />
+    <ProjectReference Include="..\CarFactory-Engine\CarFactory-Engine.csproj" />
+    <ProjectReference Include="..\CarFactory-Factory\CarFactory-Factory.csproj" />
+    <ProjectReference Include="..\CarFactory-Interior\CarFactory-Interior.csproj" />
+    <ProjectReference Include="..\CarFactory-Paint\CarFactory-Paint.csproj" />
+    <ProjectReference Include="..\CarFactory-Storage\CarFactory-Storage.csproj" />
+    <ProjectReference Include="..\CarFactory-SubContractor\CarFactory-SubContractor.csproj" />
+    <ProjectReference Include="..\CarFactory-Wheels\CarFactory-Wheels.csproj" />
+  </ItemGroup>
+
+
+</Project>

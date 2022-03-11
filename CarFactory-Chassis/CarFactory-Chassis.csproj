@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>CarFactory_Chasis</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CarFactory-Factory\CarFactory-Factory.csproj" />
+      <ProjectReference Include="..\CarFactory-SubContractor\CarFactory-SubContractor.csproj" />
+    </ItemGroup>
+
+</Project>
