@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace CarFactory_Factory
 {
@@ -36,12 +37,14 @@ namespace CarFactory_Factory
         public IEnumerable<Car> BuildCars(IEnumerable<CarSpecification> specs)
         {
             var cars = new List<Car>();
-            foreach(var spec in specs)
+
+            var s = specs.FirstOrDefault();
+            var chassis = _chassisProvider.GetChassis(s.Manufacturer, s.NumberOfDoors);
+            var engine = _engineProvider.GetEngine(s.Manufacturer);
+            var interior = _interiorProvider.GetInterior(s);
+            var wheels = _wheelProvider.GetWheels();
+            foreach (var spec in specs)
             {
-                var chassis = _chassisProvider.GetChassis(spec.Manufacturer, spec.NumberOfDoors);
-                var engine = _engineProvider.GetEngine(spec.Manufacturer);
-                var interior = _interiorProvider.GetInterior(spec);
-                var wheels = _wheelProvider.GetWheels();
                 var car = _carAssembler.AssembleCar(chassis, engine, interior, wheels);
                 var paintedCar = _painter.PaintCar(car, spec.PaintJob);
                 cars.Add(paintedCar);

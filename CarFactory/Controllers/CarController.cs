@@ -8,6 +8,7 @@ using CarFactory_Domain;
 using CarFactory_Factory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace CarFactory.Controllers
 {
@@ -33,11 +34,14 @@ namespace CarFactory.Controllers
             var cars = _carFactory.BuildCars(wantedCars);
             stopwatch.Stop();
 
-            //Create response and return
-            return new BuildCarOutputModel {
+            return JsonConvert.SerializeObject(new BuildCarOutputModel
+            {
                 Cars = cars,
                 RunTime = stopwatch.ElapsedMilliseconds
-            };
+            }, typeof(BuildCarOutputModel), new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            });
         }
 
         private static IEnumerable<CarSpecification> TransformToDomainObjects(BuildCarInputModel carsSpecs)

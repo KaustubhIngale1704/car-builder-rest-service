@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CarFactory_Domain
 {
+    [KnownType(typeof(SingleColorPaintJob))]
+    [KnownType(typeof(StripedPaintJob))]
+    [KnownType(typeof(DottedPaintJob))]
     public abstract class PaintJob
     {
         public const string ALLOWED_CHARACTERS = "abcdefghijkmnopqrstuvwxyz0123456789";
