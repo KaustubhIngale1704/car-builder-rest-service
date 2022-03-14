@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CarFactory.Controllers
+namespace CarFactory.Models
 {
     public class BuildCarInputModelItem
     {

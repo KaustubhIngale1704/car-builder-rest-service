@@ -5,8 +5,6 @@ using CarFactory_SubContractor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CarFactory_Chasis
 {
@@ -14,6 +12,7 @@ namespace CarFactory_Chasis
     {
         private readonly ISteelSubcontractor _steelSubcontractor;
         private readonly IGetChassisRecipeQuery _chassisRecipeQuery;
+        private object _lock = new();
 
         public ChassisProvider(ISteelSubcontractor steelSubcontractor, IGetChassisRecipeQuery chassisRecipeQuery)
         {
@@ -24,16 +23,21 @@ namespace CarFactory_Chasis
         {
             var chassisRecipe = _chassisRecipeQuery.Get(manufacturer);
 
-            var chassisParts = new List<ChassisPart>();
-            chassisParts.Add(new ChassisBack(chassisRecipe.BackId));
-            chassisParts.Add(new ChassisCabin(chassisRecipe.CabinId));
-            chassisParts.Add(new ChassisFront(chassisRecipe.FrontId));
+            var chassisParts = new List<ChassisPart>
+            {
+                new ChassisBack(chassisRecipe.BackId),
+                new ChassisCabin(chassisRecipe.CabinId),
+                new ChassisFront(chassisRecipe.FrontId)
+            };
 
             CheckChassisParts(chassisParts);
 
-            SteelInventory += _steelSubcontractor.OrderSteel(chassisRecipe.Cost).Select(d => d.Amount).Sum();
-            CheckForMaterials(chassisRecipe.Cost);
-            SteelInventory -= chassisRecipe.Cost;
+            lock (_lock)
+            {
+                SteelInventory += _steelSubcontractor.OrderSteel(chassisRecipe.Cost).Select(d => d.Amount).Sum();
+                CheckForMaterials(chassisRecipe.Cost);
+                SteelInventory -= chassisRecipe.Cost;
+            }
 
             var chassisWelder = new ChassisWelder();
 

@@ -1,4 +1,4 @@
-﻿namespace CarFactory.Controllers
+﻿namespace CarFactory.Models
 {
     public class SpeakerSpecificationInputModel
     {

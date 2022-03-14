@@ -16,6 +16,11 @@ namespace CarFactory_SubContractor
                 SlowWorker.FakeWorkingForMillis(100);
             }
             while (delivery.Select(d => d.Amount).Sum(a => a) < amount);
+
+            if (delivery.Sum(x => x.Amount) == 25)
+            {
+                Console.Write("Wait here");
+            }
             return delivery;
         }
     }

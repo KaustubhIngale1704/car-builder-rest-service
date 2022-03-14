@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using CarFactory_Domain;
 
-namespace CarFactory.Controllers
+namespace CarFactory.Models
 {
     public class BuildCarOutputModel
     {

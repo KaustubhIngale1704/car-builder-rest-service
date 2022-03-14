@@ -1,10 +1,8 @@
-using CarFactory;
-using CarFactory.Controllers;
+using CarFactory.Models;
 using CarFactory_Domain;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -31,8 +29,7 @@ namespace CarFactory.Tests.IntegrationTests
 
             var model = CreateRequest(total, 1, 2, "blue", "stripe", "orange", 5, Manufacturer.PlanfaRomeo);
 
-            var request = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("/car", request);
+            HttpResponseMessage response = await SendRequestAsync(model);
 
             var body = await response.Content.ReadAsStringAsync();
             var outputModel = JsonConvert.DeserializeObject<BuildCarOutputModel>(body, new JsonSerializerSettings()
@@ -51,8 +48,7 @@ namespace CarFactory.Tests.IntegrationTests
 
             var model = CreateRequest(total, 10, 20, "pink", "dot", "red", 3, Manufacturer.Planborghini);
 
-            var request = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("/car", request);
+            HttpResponseMessage response = await SendRequestAsync(model);
 
             var body = response.Content.ReadAsStringAsync().Result;
 
@@ -66,8 +62,7 @@ namespace CarFactory.Tests.IntegrationTests
 
             var model = CreateRequest(total, 0, 4, "red", "stripe", "black", 5, Manufacturer.Volksday);
 
-            var request = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("/car", request);
+            HttpResponseMessage response = await SendRequestAsync(model);
 
             var body = response.Content.ReadAsStringAsync().Result;
 
@@ -81,8 +76,7 @@ namespace CarFactory.Tests.IntegrationTests
 
             var model = CreateRequest(total, 1, 2, "black", "dot", "yellow", 3, Manufacturer.PlandayMotorWorks);
 
-            var request = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("/car", request);
+            HttpResponseMessage response = await SendRequestAsync(model);
 
             var body = await response.Content.ReadAsStringAsync();
             var outputModel = JsonConvert.DeserializeObject<BuildCarOutputModel>(body, new JsonSerializerSettings()
@@ -94,7 +88,6 @@ namespace CarFactory.Tests.IntegrationTests
             outputModel.Cars.Count().Should().Be(total);
         }
 
-
         [Fact]
         public async Task Scenario5_Test()
         {
@@ -102,8 +95,7 @@ namespace CarFactory.Tests.IntegrationTests
 
             var model = CreateRequest(total, 0, 4, "green", "stripe", "gold", 5, Manufacturer.Plandrover);
 
-            var request = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("/car", request);
+            HttpResponseMessage response = await SendRequestAsync(model);
 
             var body = await response.Content.ReadAsStringAsync();
             var outputModel = JsonConvert.DeserializeObject<BuildCarOutputModel>(body, new JsonSerializerSettings()
@@ -113,6 +105,13 @@ namespace CarFactory.Tests.IntegrationTests
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             outputModel.Cars.Count().Should().Be(total);
+        }
+
+        private async Task<HttpResponseMessage> SendRequestAsync(BuildCarInputModel model)
+        {
+            var request = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync("/car", request);
+            return response;
         }
 
         private static BuildCarInputModel CreateRequest(

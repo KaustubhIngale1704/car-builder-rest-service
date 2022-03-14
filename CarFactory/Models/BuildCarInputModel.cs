@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CarFactory.Controllers
+namespace CarFactory.Models
 {
     public class BuildCarInputModel
     {

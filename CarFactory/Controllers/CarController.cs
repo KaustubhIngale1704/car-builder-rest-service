@@ -4,6 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
+using CarFactory.Enum;
+using CarFactory.Models;
 using CarFactory_Domain;
 using CarFactory_Factory;
 using Microsoft.AspNetCore.Http;
@@ -24,24 +27,25 @@ namespace CarFactory.Controllers
 
         [ProducesResponseType(typeof(BuildCarOutputModel), StatusCodes.Status200OK)]
         [HttpPost]
-        public object Post([FromBody][Required] BuildCarInputModel carsSpecs)
+        public async Task<object> Post([FromBody][Required] BuildCarInputModel carsSpecs)
         {
 
             var wantedCars = TransformToDomainObjects(carsSpecs);
             //Build cars
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var cars = _carFactory.BuildCars(wantedCars);
+            var cars = await _carFactory.BuildCarsAsync(wantedCars);
             stopwatch.Stop();
 
+            var settings = new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
             return JsonConvert.SerializeObject(new BuildCarOutputModel
             {
                 Cars = cars,
                 RunTime = stopwatch.ElapsedMilliseconds
-            }, typeof(BuildCarOutputModel), new JsonSerializerSettings()
-            {
-                TypeNameHandling = TypeNameHandling.Auto
-            });
+            }, settings);
         }
 
         private static IEnumerable<CarSpecification> TransformToDomainObjects(BuildCarInputModel carsSpecs)
@@ -50,31 +54,27 @@ namespace CarFactory.Controllers
             var wantedCars = new List<CarSpecification>();
             foreach (var spec in carsSpecs.Cars)
             {
-                for(var i = 1; i <= spec.Amount; i++)
+                if (spec.Specification.NumberOfDoors % 2 == 0)
+                    throw new ArgumentException("Must give an odd number of doors");
+
+                PaintJob? paint = null;
+                var baseColor = Color.FromName(spec.Specification.Paint.BaseColor);
+                paint = spec.Specification.Paint.Type.ToLower() switch
                 {
-                    if(spec.Specification.NumberOfDoors % 2 == 0)
-                    {
-                        throw new ArgumentException("Must give an odd number of doors");
-                    }
-                    PaintJob? paint = null;
-                    var baseColor = Color.FromName(spec.Specification.Paint.BaseColor);
-                    switch (spec.Specification.Paint.Type.ToLower())
-                    {
-                        case "single":
-                            paint = new SingleColorPaintJob(baseColor);
-                            break;
-                        case "stripe":
-                            paint = new StripedPaintJob(baseColor, Color.FromName(spec.Specification.Paint.StripeColor));
-                            break;
-                        case "dot":
-                            paint = new DottedPaintJob(baseColor, Color.FromName(spec.Specification.Paint.DotColor));
-                            break;
-                        default:
-                            throw new ArgumentException(string.Format("Unknown paint type %", spec.Specification.Paint.Type));
-                    }
-                    var dashboardSpeakers = spec.Specification.FrontWindowSpeakers.Select(s => new CarSpecification.SpeakerSpecification { IsSubwoofer = s.IsSubwoofer });
-                    var doorSpeakers = spec.Specification.DoorSpeakers.Select(s => new CarSpecification.SpeakerSpecification { IsSubwoofer = s.IsSubwoofer });
-                    var wantedCar = new CarSpecification(paint, spec.Specification.Manufacturer, spec.Specification.NumberOfDoors, doorSpeakers, dashboardSpeakers);
+                    "single" => new SingleColorPaintJob(baseColor),
+                    "stripe" => new StripedPaintJob(baseColor, Color.FromName(spec.Specification.Paint.StripeColor)),
+                    "dot" => new DottedPaintJob(baseColor, Color.FromName(spec.Specification.Paint.DotColor)),
+                    _ => throw new ArgumentException($"Unknown paint type {spec.Specification.Paint.Type}"),
+                };
+                var dashboardSpeakers = spec.Specification.FrontWindowSpeakers?.Select(s => new CarSpecification.SpeakerSpecification { IsSubwoofer = s.IsSubwoofer })
+                    ?? Array.Empty<CarSpecification.SpeakerSpecification>();
+                var doorSpeakers = spec.Specification.DoorSpeakers?.Select(s => new CarSpecification.SpeakerSpecification { IsSubwoofer = s.IsSubwoofer })
+                    ?? Array.Empty<CarSpecification.SpeakerSpecification>();
+
+                var wantedCar = new CarSpecification(paint, spec.Specification.Manufacturer, spec.Specification.NumberOfDoors, doorSpeakers, dashboardSpeakers);
+
+                for (var i = 1; i <= spec.Amount; i++)
+                {
                     wantedCars.Add(wantedCar);
                 }
             }
