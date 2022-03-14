@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using CarFactory_Domain;
 using CarFactory_Factory;
 
@@ -6,6 +7,9 @@ namespace CarFactory_Paint
 {
     public class Painter : IPainter
     {
+        private ConcurrentDictionary<long, string> encodedPasswordDictionary;
+        private object _lock = new();
+
         public Car PaintCar(Car car, PaintJob paint)
         {
             if (car.Chassis == null) throw new Exception("Cannot paint a car without chassis");
@@ -30,23 +34,38 @@ namespace CarFactory_Paint
             return car;
         }
 
-        private static string FindPaintPassword(int passwordLength, long encodedPassword)
+        private string FindPaintPassword(int passwordLength, long encodedPassword)
         {
-            var rd = new Random();
-            string CreateRandomString()
+            lock (_lock)
             {
-                char[] chars = new char[passwordLength];
+                if (encodedPasswordDictionary?.TryGetValue(encodedPassword, out var existingSolution) ?? false)
+                    return existingSolution;
 
-                for (int i = 0; i < passwordLength; i++)
-                {
-                    chars[i] = PaintJob.ALLOWED_CHARACTERS[rd.Next(0, PaintJob.ALLOWED_CHARACTERS.Length)];
-                }
+                var rd = new Random();
 
-                return new string(chars);
+                string str = CreateRandomString(passwordLength, rd);
+
+                while (PaintJob.EncodeString(str) != encodedPassword)
+                    str = CreateRandomString(passwordLength, rd);
+
+                if (encodedPasswordDictionary == null)
+                    encodedPasswordDictionary = new();
+
+                encodedPasswordDictionary.TryAdd(encodedPassword, str);
+                return str;
             }
-            string str = CreateRandomString();
-            while (PaintJob.EncodeString(str) != encodedPassword) str = CreateRandomString();
-            return str;
+        }
+
+        string CreateRandomString(int passwordLength, Random rd)
+        {
+            char[] chars = new char[passwordLength];
+
+            for (int i = 0; i < passwordLength; i++)
+            {
+                chars[i] = PaintJob.ALLOWED_CHARACTERS[rd.Next(0, PaintJob.ALLOWED_CHARACTERS.Length)];
+            }
+
+            return new string(chars);
         }
     }
 }

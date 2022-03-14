@@ -1,0 +1,126 @@
+{
+  "cars": [
+    {
+      "amount": 75,
+      "specification": {
+        "numberOfDoors": 5,
+        "paint": {
+          "type": "stripe",
+          "baseColor": "blue",
+          "stripeColor": "Orange"
+        },
+        "manufacturer": "PlanfaRomeo",
+        "frontWindowSpeakers": [
+          { "isSubwoofer": false },
+          { "isSubwoofer": false }
+        ],
+        "doorWindowSpeakers": [
+          { "isSubwoofer": true }
+        ]
+      }
+    },
+
+    {
+      "amount": 15,
+      "specification": {
+        "numberOfDoors": 3,
+        "paint": {
+          "type": "dot",
+          "baseColor": "pink",
+          "dotColor": "red"
+        },
+        "manufacturer": "Planborghini",
+        "frontWindowSpeakers": [
+          { "isSubwoofer": true },
+          { "isSubwoofer": false }
+        ],
+        "doorWindowSpeakers": [
+          { "isSubwoofer": true },
+          { "isSubwoofer": true },
+          { "isSubwoofer": true },
+          { "isSubwoofer": true },
+          { "isSubwoofer": true },
+          { "isSubwoofer": true },
+          { "isSubwoofer": true },
+          { "isSubwoofer": true },
+          { "isSubwoofer": true },
+
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false },
+          { "isSubwoofer": false }
+        ]
+      }
+    },
+
+    {
+      "amount": 20,
+      "specification": {
+        "numberOfDoors": 5,
+        "paint": {
+          "type": "stripe",
+          "baseColor": "red",
+          "stripeColor": "black"
+        },
+        "manufacturer": "Volksday",
+        "frontWindowSpeakers": [
+          { "isSubwoofer": false },
+          { "isSubwoofer": false }
+        ]
+      }
+    },
+
+    {
+      "amount": 40,
+      "specification": {
+        "numberOfDoors": 3,
+        "paint": {
+          "type": "dot",
+          "baseColor": "black",
+          "dotColor": "yellow"
+        },
+        "manufacturer": "PlandayMotorWorks",
+        "frontWindowSpeakers": [
+          { "isSubwoofer": true },
+          { "isSubwoofer": false }
+        ]
+      }
+    },
+
+    {
+      "amount": 20,
+      "specification": {
+        "numberOfDoors": 5,
+        "paint": {
+          "type": "stripe",
+          "baseColor": "green",
+          "stripeColor": "gold"
+        },
+        "manufacturer": "Plandrover",
+        "frontWindowSpeakers": [
+          { "isSubwoofer": false },
+          { "isSubwoofer": false }
+        ],
+        "doorWindowSpeakers": [
+          { "isSubwoofer": false },
+          { "isSubwoofer": false }
+        ]
+      }
+    }
+  ]
+}
