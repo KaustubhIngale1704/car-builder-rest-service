@@ -35,7 +35,7 @@ namespace CarFactory_Factory
 
         public async Task<IEnumerable<Car>> BuildCarsAsync(IEnumerable<CarSpecification> specs)
         {
-            var cars = new ConcurrentQueue<Car>();
+            var cars = new BlockingCollection<Car>();
             var carBuidingTasks = specs.Select(spec => Task.Run(() =>
             {
                 var chassis = _chassisProvider.GetChassis(spec.Manufacturer, spec.NumberOfDoors);
@@ -44,7 +44,7 @@ namespace CarFactory_Factory
                 var wheels = _wheelProvider.GetWheels();
                 var car = _carAssembler.AssembleCar(chassis, engine, interior, wheels);
                 var paintedCar = _painter.PaintCar(car, spec.PaintJob);
-                cars.Enqueue(paintedCar);
+                cars.Add(paintedCar);
             }));
             await Task.WhenAll(carBuidingTasks);
             return cars;

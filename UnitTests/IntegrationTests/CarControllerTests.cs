@@ -52,6 +52,7 @@ namespace CarFactory.Tests.IntegrationTests
 
             var body = response.Content.ReadAsStringAsync().Result;
 
+            // Validations on fron speakers
             body.Should().Contain("More than 2 speakers aren't supported");
         }
 
@@ -66,6 +67,7 @@ namespace CarFactory.Tests.IntegrationTests
 
             var body = response.Content.ReadAsStringAsync().Result;
 
+            // Manufacturer "Volksday" missing in sqlite.db
             body.Should().Contain("Sequence contains no matching element");
         }
 

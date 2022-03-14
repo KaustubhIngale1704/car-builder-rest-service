@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
-using CarFactory.Enum;
 using CarFactory.Models;
 using CarFactory_Domain;
 using CarFactory_Factory;
@@ -43,7 +42,7 @@ namespace CarFactory.Controllers
             };
             return JsonConvert.SerializeObject(new BuildCarOutputModel
             {
-                Cars = cars,
+                Cars = cars.ToList(),
                 RunTime = stopwatch.ElapsedMilliseconds
             }, settings);
         }
